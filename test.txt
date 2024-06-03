@@ -1,3 +1,1 @@
 This is first repo to sync.
-
-this is new feature in second repo.
