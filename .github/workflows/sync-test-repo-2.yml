@@ -16,21 +16,26 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
+        if: ${{ success() }}
 
       - name: Add test-repo-2 as remote
         run: git remote add test-repo-2 https://github.com/binarydata123/test-repo-2.git
+        if: ${{ success() }}
 
       - name: Fetch test-repo-2
         run: git fetch test-repo-2
+        if: ${{ success() }}
 
       - name: Merge changes to development branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-development test-repo-2/development
           git merge --allow-unrelated-histories main
-          git push test-repo-2 test-repo-2-development:development
+          git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-development:development
+        if: ${{ success() }}
 
       - name: Merge changes to main branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-main test-repo-2/main
           git merge --allow-unrelated-histories main
-          git push test-repo-2 test-repo-2-main:main
+          git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-main:main
+        if: ${{ success() }}
