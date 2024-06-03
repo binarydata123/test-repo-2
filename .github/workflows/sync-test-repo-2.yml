@@ -1,0 +1,36 @@
+name: Sync test Repo 2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test-repo-1
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Add test-repo-2 as remote
+        run: git remote add test-repo-2 https://github.com/binarydata123/test-repo-2.git
+
+      - name: Fetch test-repo-2
+        run: git fetch test-repo-2
+
+      - name: Merge changes to development branch and push to test-repo-2
+        run: |
+          git checkout -b test-repo-2-development test-repo-2/development
+          git merge main
+          git push test-repo-2 test-repo-2-development:development
+
+      - name: Merge changes to main branch and push to test-repo-2
+        run: |
+          git checkout -b test-repo-2-main test-repo-2/main
+          git merge main
+          git push test-repo-2 test-repo-2-main:main
