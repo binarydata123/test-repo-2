@@ -26,11 +26,11 @@ jobs:
       - name: Merge changes to development branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-development test-repo-2/development
-          git merge main
+          git merge --allow-unrelated-histories main
           git push test-repo-2 test-repo-2-development:development
 
       - name: Merge changes to main branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-main test-repo-2/main
-          git merge main
+          git merge --allow-unrelated-histories main
           git push test-repo-2 test-repo-2-main:main
