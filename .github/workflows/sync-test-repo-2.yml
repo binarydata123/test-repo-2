@@ -31,26 +31,30 @@ jobs:
           git remote prune test-repo-2
           git fetch test-repo-2
 
+      - name: Create branch with current date and time
+        run: |
+          datetime=$(date '+%Y%m%d%H%M%S')
+          git checkout -b "test-repo-1-changes-${datetime}"
+
       - name: Merge changes to development branch and push to test-repo-2
         run: |
-          git checkout -b test-repo-2-development test-repo-2/development || git checkout test-repo-2-development
           git merge --allow-unrelated-histories main || true
           if [ -f .git/MERGE_HEAD ]; then
             # Resolve merge conflicts manually
             echo "Resolve merge conflicts manually and commit the changes."
             exit 1
           fi
-          git push https://github.com/binarydata123/test-repo-2.git test-repo-2-development:development
+          git push https://github.com/binarydata123/test-repo-2.git HEAD:test-repo-2-development
         if: ${{ success() }}
 
       - name: Merge changes to main branch and push to test-repo-2
         run: |
-          git checkout -b test-repo-2-main test-repo-2/main || git checkout test-repo-2-main
+          git checkout main || true
           git merge --allow-unrelated-histories main || true
           if [ -f .git/MERGE_HEAD ]; then
             # Resolve merge conflicts manually
             echo "Resolve merge conflicts manually and commit the changes."
             exit 1
           fi
-          git push https://github.com/binarydata123/test-repo-2.git test-repo-2-main:main
+          git push https://github.com/binarydata123/test-repo-2.git HEAD:test-repo-2-main
         if: ${{ success() }}
