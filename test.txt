@@ -1,3 +1,9 @@
+<<<<<<< HEAD
 This is first repo to sync.
 checking conflict.
 Adding conflict from repo 1111.
+=======
+This is first repo to sync and test conflicts code.
+checking conflict.
+Adding conflict from repo 1111.
+>>>>>>> main
