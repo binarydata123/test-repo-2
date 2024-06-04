@@ -34,13 +34,23 @@ jobs:
       - name: Merge changes to development branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-development test-repo-2/development || git checkout test-repo-2-development
-          git merge --allow-unrelated-histories main
+          git merge --allow-unrelated-histories main || true
+          if [ -f .git/MERGE_HEAD ]; then
+            git merge --strategy-option=theirs --no-commit --no-ff
+            git add .
+            git commit -m "Resolved conflicts by combining changes"
+          fi
           git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-development:development
         if: ${{ success() }}
 
       - name: Merge changes to main branch and push to test-repo-2
         run: |
           git checkout -b test-repo-2-main test-repo-2/main || git checkout test-repo-2-main
-          git merge --allow-unrelated-histories main
+          git merge --allow-unrelated-histories main || true
+          if [ -f .git/MERGE_HEAD ]; then
+            git merge --strategy-option=theirs --no-commit --no-ff
+            git add .
+            git commit -m "Resolved conflicts by combining changes"
+          fi
           git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-main:main
         if: ${{ success() }}
