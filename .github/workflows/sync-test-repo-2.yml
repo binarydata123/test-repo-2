@@ -13,6 +13,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.PAT_TEST_REPO_2 }}
+          fetch-depth: 0
 
       - name: Set up Git
         run: |
@@ -22,8 +23,13 @@ jobs:
       - name: Add test-repo-2 as remote
         run: git remote add test-repo-2 https://github.com/binarydata123/test-repo-2.git
 
-      - name: Fetch test-repo-2
-        run: git fetch test-repo-2
+      - name: Fetch and Clear Cache of test-repo-2
+        run: |
+          git fetch --all
+          git gc --prune=now
+          git reflog expire --expire=now --all
+          git remote prune test-repo-2
+          git fetch test-repo-2
 
       - name: Merge changes to development branch and push to test-repo-2
         run: |
