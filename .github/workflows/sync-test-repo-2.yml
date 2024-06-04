@@ -1,0 +1,46 @@
+name: Sync test Repo 2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout test-repo-1
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_TEST_REPO_2 }}
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Add test-repo-2 as remote
+        run: git remote add test-repo-2 https://github.com/binarydata123/test-repo-2.git
+
+      - name: Fetch and Clear Cache of test-repo-2
+        run: |
+          git fetch --all
+          git gc --prune=now
+          git reflog expire --expire=now --all
+          git remote prune test-repo-2
+          git fetch test-repo-2
+
+      - name: Merge changes to development branch and push to test-repo-2
+        run: |
+          git checkout -b test-repo-2-development test-repo-2/development || git checkout test-repo-2-development
+          git merge --allow-unrelated-histories main
+          git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-development:development
+        if: ${{ success() }}
+
+      - name: Merge changes to main branch and push to test-repo-2
+        run: |
+          git checkout -b test-repo-2-main test-repo-2/main || git checkout test-repo-2-main
+          git merge --allow-unrelated-histories main
+          git push https://x-access-token:${{ secrets.PAT_TEST_REPO_2 }}@github.com/binarydata123/test-repo-2.git test-repo-2-main:main
+        if: ${{ success() }}
