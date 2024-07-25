@@ -1,0 +1,51 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js (or another environment if needed)
+      uses: actions/setup-node@v3
+      with:
+        node-version: '14'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Project
+      run: npm run build
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build
+        path: path/to/build
+
+    - name: Checkout Target Repository
+      uses: actions/checkout@v3
+      with:
+        repository: username/target-repo
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: target-repo
+
+    - name: Copy Build Artifacts
+      run: |
+        cp -r path/to/build/* target-repo/path/in/target/repo
+
+    - name: Commit and Push Build Artifacts
+      run: |
+        cd target-repo
+        git config user.name "github-actions"
+        git config user.email "github-actions@github.com"
+        git add .
+        git commit -m "Deploy build artifacts"
+        git push
