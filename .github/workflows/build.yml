@@ -28,32 +28,32 @@ jobs:
       run: |
         # List contents of the current directory to verify build output
         ls -al
-        # List contents of the 'dist' directory
-        ls -al dist
+        # List contents of the build output directory
+        ls -al .next
 
     - name: Checkout Target Repository
       uses: actions/checkout@v3
       with:
         repository: binarydata123/test-repo-1
         token: ${{ secrets.GITHUB_TOKEN }}
-        path: target-repo
+        path: test-repo-1
 
     - name: Create Target Directory
-      run: mkdir -p target-repo/build-artifacts/
+      run: mkdir -p test-repo-1/build-artifacts/
 
     - name: Copy Build Artifacts
       run: |
-        # Check if the dist directory exists and is not empty
-        if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
-          cp -r dist/* target-repo/build-artifacts/
+        # Check if the build directory exists and is not empty
+        if [ -d ".next" ] && [ "$(ls -A .next)" ]; then
+          cp -r .next/* test-repo-1/build-artifacts/
         else
-          echo "No build artifacts found in 'dist' directory."
+          echo "No build artifacts found in '.next' directory."
           exit 1
         fi
 
     - name: Commit and Push Build Artifacts
       run: |
-        cd target-repo
+        cd test-repo-1
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
         git add build-artifacts/*
