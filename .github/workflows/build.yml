@@ -33,10 +33,13 @@ jobs:
     - name: Copy Build Artifacts
       run: |
         # Create target directory if it doesn't exist
-        mkdir -p path/in/target/repo
+        mkdir -p path/in/target/repo/
+
+        # Remove any existing build artifacts in the target directory
+        rm -rf path/in/target/repo/*
 
         # Copy build artifacts to target repository directory
-        cp -r path/to/build/* path/in/target/repo/
+        cp -r dist/* path/in/target/repo/
 
     - name: Commit and Push Build Artifacts
       run: |
