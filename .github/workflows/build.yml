@@ -21,7 +21,7 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-      
+
     - name: Build Project
       run: npm run build
 
@@ -36,7 +36,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: binarydata123/test-repo-1
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT_TEST_REPO_2 }}
         path: test-repo-1
 
     - name: Create Target Directory
