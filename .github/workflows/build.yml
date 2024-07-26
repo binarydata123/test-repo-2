@@ -24,6 +24,13 @@ jobs:
     - name: Build Project
       run: npm run build
 
+    - name: List Build Output Directory
+      run: |
+        # List contents of the current directory to verify build output
+        ls -al
+        # List contents of the 'dist' directory
+        ls -al dist
+
     - name: Checkout Target Repository
       uses: actions/checkout@v3
       with:
@@ -31,16 +38,18 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         path: target-repo
 
+    - name: Create Target Directory
+      run: mkdir -p target-repo/build-artifacts/
+
     - name: Copy Build Artifacts
       run: |
-        # Create target directory if it doesn't exist
-        mkdir -p target-repo/build-artifacts/
-
-        # Remove any existing build artifacts in the target directory
-        rm -rf target-repo/build-artifacts/*
-
-        # Copy build artifacts to target repository directory
-        cp -r dist/* target-repo/build-artifacts/
+        # Check if the dist directory exists and is not empty
+        if [ -d "dist" ] && [ "$(ls -A dist)" ]; then
+          cp -r dist/* target-repo/build-artifacts/
+        else
+          echo "No build artifacts found in 'dist' directory."
+          exit 1
+        fi
 
     - name: Commit and Push Build Artifacts
       run: |
