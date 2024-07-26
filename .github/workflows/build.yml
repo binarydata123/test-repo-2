@@ -24,28 +24,24 @@ jobs:
     - name: Build Project
       run: npm run build
 
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build
-        path: path/to/build
-
     - name: Checkout Target Repository
       uses: actions/checkout@v3
       with:
-        repository: username/target-repo
+        repository: binarydata123/test-repo-1
         token: ${{ secrets.GITHUB_TOKEN }}
-        path: target-repo
 
     - name: Copy Build Artifacts
       run: |
-        cp -r path/to/build/* target-repo/path/in/target/repo
+        # Create target directory if it doesn't exist
+        mkdir -p path/in/target/repo
+
+        # Copy build artifacts to target repository directory
+        cp -r path/to/build/* path/in/target/repo/
 
     - name: Commit and Push Build Artifacts
       run: |
-        cd target-repo
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add .
+        git add path/in/target/repo/*
         git commit -m "Deploy build artifacts"
         git push
