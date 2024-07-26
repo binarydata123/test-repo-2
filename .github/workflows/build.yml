@@ -29,22 +29,24 @@ jobs:
       with:
         repository: binarydata123/test-repo-1
         token: ${{ secrets.GITHUB_TOKEN }}
+        path: target-repo
 
     - name: Copy Build Artifacts
       run: |
         # Create target directory if it doesn't exist
-        mkdir -p path/in/target/repo/
+        mkdir -p target-repo/build-artifacts/
 
         # Remove any existing build artifacts in the target directory
-        rm -rf path/in/target/repo/*
+        rm -rf target-repo/build-artifacts/*
 
         # Copy build artifacts to target repository directory
-        cp -r dist/* path/in/target/repo/
+        cp -r dist/* target-repo/build-artifacts/
 
     - name: Commit and Push Build Artifacts
       run: |
+        cd target-repo
         git config user.name "github-actions"
         git config user.email "github-actions@github.com"
-        git add path/in/target/repo/*
+        git add build-artifacts/*
         git commit -m "Deploy build artifacts"
         git push
